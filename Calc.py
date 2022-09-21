@@ -13,12 +13,16 @@ tokens= [
     "MINUS",
     "MULTIPLY",
     "EQUALS",
+    "DIVIDE",
+    "MODULUS"
 ]
 
 t_PLUS= r'\+'
 t_MINUS= r'\-'
 t_MULTIPLY= r'\*'
 t_EQUALS= r'\='
+t_DIVIDE= r'/'
+t_MODULUS= r'%'
 
 t_ignore=r'\ '
 
@@ -95,6 +99,8 @@ def p_expression(p):
     expression : expression MULTIPLY expression
                | expression PLUS expression
                | expression MINUS expression
+               | expression DIVIDE expression
+               | expression MODULUS expression
     '''
 
     p[0]=(p[2], p[1], p[3])
@@ -136,6 +142,10 @@ def run(p):
             return run(p[1])-run(p[2])
         elif p[0]=='*':
             return run(p[1])*run(p[2])
+        elif p[0]=='/':
+            return run(p[1])//run(p[2])
+        elif p[0]=='%':
+            return run(p[1])%run(p[2])
         elif p[0]=='=':
             env[p[1]]=run(p[2])
         elif p[0]=='var':
@@ -154,7 +164,12 @@ def run(p):
 while True:
     
 
-    Pbase=int(input("Please enter the base you would like to use: "))
+    try:
+        Pbase=int(input("Please enter the base you would like to use: "))
+    except ValueError:
+        print("Please enter an integer")
+        continue
+        
 
     
     
@@ -166,9 +181,8 @@ while True:
     except EOFError:
         break
         
-    except ValueError:
-        print("Please enter an integer")
-        continue
+    
+        
 
     
 
